@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Notaris Haikal Arsyi</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root {
+  --gold:#b8965a; --gold-l:#d4b87a; --gold-d:#8a6d3b;
+  --cream:#faf7f2; --navy:#1a2540; --navy2:#1e2d4e;
+  --r:14px; --rs:10px;
+  --fd:'Cormorant Garamond',serif; --fb:'Outfit',sans-serif;
+  --card-bg:rgba(255,255,255,0.10);
+  --card-bd:rgba(184,150,90,0.22);
+  --inp-bg:rgba(255,255,255,0.12);
+  --inp-bd:rgba(184,150,90,0.30);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{height:100%;overflow:hidden;}
+body{
+  font-family:var(--fb);color:var(--cream);
+  height:100%;overflow:hidden;
+  background:#1a2540;
+  position:relative;
+}
+/* BG layer */
+#bgLayer{
+  position:fixed;inset:0;z-index:0;
+  background:linear-gradient(135deg,#1a2540 0%,#243058 55%,#1a2540 100%);
+  background-size:cover;background-position:center;
+  transition:background 0.4s;
+}
+#bgLayer::after{
+  content:'';position:absolute;inset:0;
+  background:rgba(15,20,38,0.55);
+}
+/* Clear glass — no frosted blur */
+.glass{
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(184,150,90,0.22);
+  border-radius:var(--r);
+}
+/* ── LOGIN ── */
+#loginScreen{
+  position:fixed;inset:0;z-index:999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px 20px 50px;
+  background:#050d1c;
+  background-size:cover;background-position:center bottom;
+  overflow:hidden;
+}
+#loginScreen::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background:linear-gradient(180deg,rgba(3,8,18,0.75) 0%,rgba(5,13,28,0.55) 50%,rgba(3,8,18,0.88) 100%);
+}
+#loginScreen>*{position:relative;z-index:1;}
+#loginScreen.hidden{display:none;}
+#loginCopyright{
+  position:absolute;bottom:14px;left:0;right:0;z-index:1;
+  text-align:center;font-size:10.5px;color:rgba(212,184,122,0.38);letter-spacing:0.3px;
+}
+.login-box{
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(184,150,90,0.35);
+  border-radius:20px;padding:36px 28px;
+  width:100%;max-width:360px;text-align:center;
+  animation:fadeUp .5s ease;
+}
+.login-logo{
+  width:80px;height:80px;border-radius:16px;
+  background:linear-gradient(145deg,rgba(138,109,59,0.35),rgba(184,150,90,0.18));
+  border:1.5px solid rgba(184,150,90,0.45);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;overflow:hidden;
+  box-shadow:0 6px 28px rgba(184,150,90,0.25),0 1px 0 rgba(255,255,255,0.08) inset;
+}
+.login-logo img{width:100%;height:100%;object-fit:cover;border-radius:14px;}
+.login-logo svg{width:48px;height:48px;}
+.login-box h2{font-family:var(--fd);font-size:20px;font-weight:600;color:var(--gold-l);line-height:1.3;}
+.login-tagline{font-size:12px;color:rgba(250,247,242,0.45);margin:4px 0 24px;}
+.login-err{color:#ff8080;font-size:12px;margin-bottom:10px;display:none;}
+.inp{
+  width:100%;padding:12px 15px;margin-bottom:12px;
+  background:var(--inp-bg);border:1px solid var(--inp-bd);
+  border-radius:var(--rs);color:var(--cream);
+  font-family:var(--fb);font-size:15px;outline:none;
+  transition:border .2s,box-shadow .2s;
+}
+.inp::placeholder{font-size:13px;color:rgba(250,247,242,0.35);}
+.inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,150,90,0.15);}
+/* ── CANDY BTN ── */
+.bc{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:11px 22px;border-radius:50px;border:none;cursor:pointer;
+  font-family:var(--fb);font-size:13.5px;font-weight:500;
+  background:linear-gradient(135deg,var(--gold-d),var(--gold),var(--gold-l));
+  color:#1a2540;position:relative;overflow:hidden;
+  box-shadow:0 4px 18px rgba(184,150,90,0.35),0 1px 0 rgba(255,255,255,0.2) inset;
+  transition:transform .2s,box-shadow .2s;white-space:nowrap;
+}
+.bc::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.22),transparent);
+  transition:left .4s;}
+.bc:active{transform:scale(0.97);}
+.bc:hover::before{left:100%;}
+/* ── GLASS BTN ── */
+.bg{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  padding:9px 16px;border-radius:50px;cursor:pointer;
+  font-family:var(--fb);font-size:13px;font-weight:400;
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(184,150,90,0.28);
+  color:var(--cream);transition:background .2s,border .2s;white-space:nowrap;
+}
+.bg:active{background:rgba(255,255,255,0.16);}
+.bg-sm{padding:7px 12px;font-size:12px;}
+.bd{background:rgba(200,50,50,0.14);border-color:rgba(200,50,50,0.28);color:#ff9090;}
+.bd:active{background:rgba(200,50,50,0.22);}
+
+/* ── APP WRAPPER ── */
+#app{height:100%;display:flex;flex-direction:column;position:relative;z-index:1;overflow:hidden;}
+
+/* ── HEADER ── */
+.hdr{
+  padding:8px 14px;
+  background:rgba(255,255,255,0.07);
+  border-bottom:1px solid rgba(184,150,90,0.18);
+  display:flex;align-items:center;gap:10px;
+  flex-shrink:0;position:relative;z-index:50;
+}
+.hdr-logo{
+  width:36px;height:36px;border-radius:9px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold-d),var(--gold-l));
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;overflow:hidden;
+}
+.hdr-logo img{width:100%;height:100%;object-fit:cover;}
+.hdr-txt{flex:1;min-width:0;}
+.hdr-txt h1{
+  font-family:var(--fd);font-size:14px;font-weight:600;
+  color:var(--gold-l);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hdr-txt p{font-size:10px;color:rgba(250,247,242,0.42);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hdr-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.hdr-date{font-size:10px;color:rgba(250,247,242,0.42);text-align:right;line-height:1.4;}
+.icon-btn{
+  width:34px;height:34px;border-radius:10px;border:none;cursor:pointer;
+  background:rgba(255,255,255,0.10);color:var(--cream);font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(184,150,90,0.2);flex-shrink:0;
+}
+.icon-btn.danger{background:rgba(200,50,50,0.15);border-color:rgba(200,50,50,0.25);color:#ff9090;}
+
+/* ── NAV TABS ── */
+.nav{
+  display:flex;background:rgba(255,255,255,0.04);
+  border-bottom:1px solid rgba(184,150,90,0.15);
+  flex-shrink:0;overflow-x:auto;
+}
+.nav::-webkit-scrollbar{display:none;}
+.ntab{
+  flex:1;min-width:0;padding:10px 4px;
+  font-family:var(--fb);font-size:12px;font-weight:400;
+  color:rgba(250,247,242,0.45);cursor:pointer;border:none;background:transparent;
+  border-bottom:2px solid transparent;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  transition:color .2s,border-color .2s;white-space:nowrap;
+}
+.ntab .ti{font-size:18px;}
+.ntab.active{color:var(--gold-l);border-bottom-color:var(--gold);}
+
+/* ── TAB CONTENT ── */
+.tabs{flex:1;overflow:hidden;position:relative;}
+.tc{
+  display:none;height:100%;overflow-y:auto;overflow-x:hidden;
+  padding:14px 12px 80px;
+  -webkit-overflow-scrolling:touch;
+}
+.tc::-webkit-scrollbar{width:3px;}
+.tc::-webkit-scrollbar-thumb{background:rgba(184,150,90,0.2);border-radius:2px;}
+.tc.active{display:block;animation:fadeUp .25s ease;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION HEAD ── */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.sec-title{font-family:var(--fd);font-size:19px;font-weight:600;color:var(--gold-l);}
+.sec-sub{font-size:11.5px;color:rgba(250,247,242,0.38);margin-top:2px;}
+
+/* ── CARD ── */
+.card{background:rgba(255,255,255,0.10);border:1px solid rgba(184,150,90,0.20);border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
+.card-h{
+  padding:12px 14px;
+  border-bottom:1px solid rgba(184,150,90,0.14);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(184,150,90,0.06);
+}
+.card-h h3{font-family:var(--fd);font-size:15px;font-weight:600;color:var(--gold-l);display:flex;align-items:center;gap:6px;}
+.card-b{padding:14px;}
+
+/* ── LAYANAN ITEM CARD (VERTICAL) ── */
+.lv-item{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(184,150,90,0.18);
+  border-radius:12px;margin-bottom:10px;overflow:hidden;
+}
+.lv-top{padding:12px 14px 10px;}
+.lv-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.lv-name{font-size:14.5px;font-weight:500;color:var(--cream);}
+.lv-date{font-size:11px;color:rgba(250,247,242,0.4);}
+.lv-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.lv-bottom{
+  padding:10px 14px;
+  background:rgba(0,0,0,0.12);
+  border-top:1px solid rgba(184,150,90,0.12);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+.lv-fin{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.fin-item{text-align:center;}
+.fin-lbl{font-size:10px;color:rgba(250,247,242,0.38);text-transform:uppercase;letter-spacing:.4px;}
+.fin-val{font-size:13px;font-weight:500;}
+.lv-acts{display:flex;gap:6px;}
+
+/* HORIZONTAL TABLE VIEW */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{padding:9px 10px;background:rgba(184,150,90,0.10);color:var(--gold-l);font-weight:500;font-size:11px;letter-spacing:.4px;text-transform:uppercase;border-bottom:1px solid rgba(184,150,90,0.18);white-space:nowrap;}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.04);transition:background .15s;}
+tbody tr:hover{background:rgba(255,255,255,0.04);}
+tbody td{padding:10px 10px;vertical-align:middle;color:rgba(250,247,242,0.85);}
+
+/* ── BADGE ── */
+.badge{display:inline-block;padding:3px 9px;border-radius:50px;font-size:11px;font-weight:500;}
+.bb{background:rgba(90,130,200,0.18);border:1px solid rgba(90,130,200,0.32);color:#90b8f0;}
+.bg2{background:rgba(72,187,120,0.14);border:1px solid rgba(72,187,120,0.28);color:#7de8a8;}
+.bo{background:rgba(220,140,60,0.14);border:1px solid rgba(220,140,60,0.28);color:#f0b870;}
+.bp{background:rgba(160,90,200,0.14);border:1px solid rgba(160,90,200,0.28);color:#c890f0;}
+.br{background:rgba(220,60,60,0.14);border:1px solid rgba(220,60,60,0.28);color:#f08080;}
+
+/* ── FORM ── */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.fg label{font-size:11px;font-weight:500;color:rgba(212,175,122,0.8);letter-spacing:.4px;text-transform:uppercase;}
+.fc{
+  width:100%;padding:11px 13px;
+  background:var(--inp-bg);border:1px solid var(--inp-bd);
+  border-radius:var(--rs);color:var(--cream);
+  font-family:var(--fb);font-size:14px;outline:none;
+  transition:border .2s,box-shadow .2s;text-transform:uppercase;
+}
+.fc::placeholder{text-transform:none;color:rgba(250,247,242,0.3);}
+.fc:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,150,90,0.12);}
+select.fc{cursor:pointer;}
+select.fc option{background:#1e2d4e;color:var(--cream);text-transform:uppercase;}
+textarea.fc{resize:vertical;min-height:68px;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.full{grid-column:1/-1;}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.sc{
+  background:rgba(255,255,255,0.09);
+  border:1px solid rgba(184,150,90,0.18);
+  border-radius:12px;padding:14px 12px;
+  position:relative;overflow:hidden;
+}
+.sc::after{content:'';position:absolute;bottom:-12px;right:-12px;width:50px;height:50px;border-radius:50%;background:rgba(184,150,90,0.07);}
+.sc-icon{font-size:18px;margin-bottom:6px;}
+.sc-lbl{font-size:10px;color:rgba(250,247,242,0.42);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.sc-val{font-family:var(--fd);font-size:18px;font-weight:600;color:var(--gold-l);line-height:1.2;}
+.sc-sub{font-size:10px;color:rgba(250,247,242,0.35);margin-top:2px;}
+.tg{color:var(--gold-l);}
+.tgr{color:#7de8a8;}
+.tr{color:#ff9090;}
+
+/* ── ZAKAT ── */
+.zakat{
+  background:rgba(184,150,90,0.12);
+  border:1px solid rgba(184,150,90,0.35);
+  border-radius:14px;padding:20px;text-align:center;margin-top:12px;
+  position:relative;overflow:hidden;
+}
+.zakat::before{content:'☽';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:52px;opacity:0.07;color:var(--gold);}
+.zakat h4{font-family:var(--fd);font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.zakat-amt{font-family:var(--fd);font-size:28px;font-weight:600;color:var(--gold-l);margin-bottom:4px;}
+.zakat-note{font-size:11px;color:rgba(250,247,242,0.42);}
+
+/* ── PROFIT BAR ── */
+.pbar{height:5px;border-radius:3px;background:rgba(255,255,255,0.06);overflow:hidden;margin-top:6px;}
+.pbar-f{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold-d),var(--gold-l));transition:width .6s ease;}
+
+/* ── MODAL ── */
+.mo{
+  position:fixed;inset:0;z-index:400;
+  background:rgba(8,12,26,0.80);
+  display:flex;align-items:flex-end;
+  padding:0;
+}
+.mo.hidden{display:none;}
+.mb{
+  background:linear-gradient(180deg,#1e2d4e 0%,#1a2540 100%);
+  border:1px solid rgba(184,150,90,0.25);
+  border-radius:20px 20px 0 0;
+  width:100%;max-height:92vh;
+  display:flex;flex-direction:column;
+  animation:slideUp .3s ease;
+}
+.mb.center{
+  border-radius:16px;
+  max-width:460px;width:calc(100% - 24px);
+  margin:auto;
+  animation:fadeUp .25s ease;
+  align-self:center;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mh{
+  padding:14px 16px 12px;flex-shrink:0;
+  border-bottom:1px solid rgba(184,150,90,0.14);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(184,150,90,0.06);
+  border-radius:20px 20px 0 0;
+  position:relative;
+}
+.mb.center .mh{border-radius:16px 16px 0 0;}
+/* drag handle */
+.mh::before{
+  content:'';position:absolute;top:7px;left:50%;transform:translateX(-50%);
+  width:36px;height:3px;border-radius:2px;background:rgba(255,255,255,0.18);
+}
+.mh h3{font-family:var(--fd);font-size:16px;font-weight:600;color:var(--gold-l);}
+.mh p{font-size:11px;color:rgba(250,247,242,0.38);margin-top:2px;}
+.mc{cursor:pointer;font-size:20px;color:rgba(250,247,242,0.5);background:none;border:none;padding:4px;line-height:1;}
+.mbody{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;}
+.mbody::-webkit-scrollbar{width:3px;}
+.mbody::-webkit-scrollbar-thumb{background:rgba(184,150,90,0.2);}
+.mfoo{padding:12px 16px;border-top:1px solid rgba(184,150,90,0.14);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;}
+
+/* ── FILTER BOTTOM SHEET ── */
+.filter-sheet{padding:16px;}
+.filter-sheet .fg{margin-bottom:10px;}
+
+/* ── PENGELUARAN ── */
+.pitem{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(184,150,90,0.14);
+  border-radius:10px;padding:10px 12px;
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:8px;
+}
+.pitem-info{flex:1;min-width:0;}
+.pitem-name{font-size:13.5px;font-weight:500;}
+.pitem-note{font-size:11px;color:rgba(250,247,242,0.38);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pitem-amt{font-size:13px;font-weight:500;color:var(--gold-l);white-space:nowrap;}
+.ptotal{
+  background:rgba(184,150,90,0.10);border:1px solid rgba(184,150,90,0.25);
+  border-radius:10px;padding:12px 14px;
+  display:flex;justify-content:space-between;align-items:center;margin-top:10px;
+}
+.ptotal span:first-child{font-size:12px;color:rgba(250,247,242,0.5);}
+.ptotal span:last-child{font-family:var(--fd);font-size:19px;font-weight:600;color:var(--gold-l);}
+
+/* ── DIVIDER ── */
+hr{border:none;border-top:1px solid rgba(184,150,90,0.12);margin:12px 0;}
+
+/* ── CONFIG LIST ── */
+.cfg-item{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(184,150,90,0.12);
+  border-radius:9px;padding:10px 12px;
+  display:flex;align-items:center;gap:8px;margin-bottom:6px;
+}
+.cfg-item span{flex:1;font-size:13.5px;text-transform:uppercase;}
+.cfg-add{display:flex;gap:8px;margin-top:8px;}
+.cfg-add .fc{flex:1;font-size:13px;}
+
+/* ── COLOR SWATCH ── */
+.swatches{display:flex;gap:10px;flex-wrap:wrap;padding-top:6px;}
+.swatch{width:32px;height:32px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all .2s;}
+.swatch.active{border-color:var(--cream);transform:scale(1.15);}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(20px);
+  z-index:999;opacity:0;transition:all .3s ease;
+  background:rgba(20,28,52,0.96);border:1px solid rgba(184,150,90,0.3);
+  color:var(--cream);font-size:13px;padding:10px 20px;border-radius:50px;
+  white-space:nowrap;pointer-events:none;
+  box-shadow:0 6px 24px rgba(0,0,0,0.3);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── VIEW TOGGLE ── */
+.vtoggle{display:flex;gap:6px;align-items:center;}
+.vtbtn{
+  width:30px;height:30px;border-radius:8px;border:1px solid rgba(184,150,90,0.22);
+  background:transparent;color:rgba(250,247,242,0.45);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  transition:all .2s;
+}
+.vtbtn.active{background:rgba(184,150,90,0.2);border-color:var(--gold);color:var(--gold-l);}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:40px 20px;color:rgba(250,247,242,0.28);}
+.empty-icon{font-size:40px;margin-bottom:10px;}
+.empty p{font-size:13px;}
+
+/* ── SECTION LABEL ── */
+.slbl{font-size:11px;font-weight:500;color:rgba(212,175,122,0.7);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.slbl::after{content:'';flex:1;height:1px;background:rgba(184,150,90,0.14);}
+
+/* ── NO SELECT ── */
+.no-select{user-select:none;-webkit-user-select:none;}
+
+/* ── JENIS BREAKDOWN TABLE ── */
+.jt-row{
+  display:flex;align-items:center;padding:10px 12px;
+  border-bottom:1px solid rgba(255,255,255,0.04);gap:8px;flex-wrap:wrap;
+}
+.jt-row:last-child{border-bottom:none;}
+.jt-name{flex:1;min-width:80px;}
+.jt-num{text-align:right;min-width:50px;font-size:12px;}
+
+@media(max-width:360px){
+  .zakat-nisab-grid{grid-template-columns:1fr !important;}
+}
+@media(min-width:600px){
+  .fg2{grid-template-columns:1fr 1fr;}
+  .stats{grid-template-columns:repeat(4,1fr);}
+  .tc{padding:18px 18px 100px;}
+}
+</style>
+</head>
+<body>
+<div id="bgLayer"></div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo" id="loginLogo"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Scales of Justice SVG -->
+  <rect x="22.5" y="6" width="3" height="32" rx="1.5" fill="#d4b87a"/>
+  <rect x="10" y="36" width="28" height="3" rx="1.5" fill="#d4b87a"/>
+  <!-- Top crossbar -->
+  <rect x="10" y="9" width="28" height="2.5" rx="1.25" fill="#d4b87a"/>
+  <!-- Left chain -->
+  <line x1="13" y1="11.5" x2="9" y2="22" stroke="#d4b87a" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Right chain -->
+  <line x1="35" y1="11.5" x2="39" y2="22" stroke="#d4b87a" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Left pan -->
+  <path d="M5 22 Q9 28 13 22" stroke="#d4b87a" stroke-width="1.5" fill="rgba(184,150,90,0.18)" stroke-linecap="round"/>
+  <!-- Right pan -->
+  <path d="M35 22 Q39 28 43 22" stroke="#d4b87a" stroke-width="1.5" fill="rgba(184,150,90,0.18)" stroke-linecap="round"/>
+  <!-- Center ornament -->
+  <circle cx="24" cy="7" r="2.5" fill="#d4b87a"/>
+</svg></div>
+    <h2 id="loginTitle">Muhammad Haikal Arsyi</h2>
+    <div class="login-tagline" id="loginTagline">Sistem Manajemen Kenotariatan</div>
+    <div class="login-err" id="loginErr">Username atau password salah</div>
+    <input class="inp" id="lu" type="text" placeholder="Username" autocomplete="off" autocapitalize="none">
+    <input class="inp" id="lp" type="password" placeholder="Password">
+    <button class="bc" style="width:100%;" onclick="doLogin()">🔐 MASUK</button>
+  </div>
+  <div id="loginCopyright">Copyright ©2026 SRISP &nbsp;|&nbsp; v1.6</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- HEADER -->
+  <header class="hdr no-select">
+    <div class="hdr-logo" id="hdrLogo">⚖️</div>
+    <div class="hdr-txt">
+      <h1 id="hdrName">Muhammad Haikal Arsyi, ST., M.Kn.</h1>
+      <p id="hdrSub">Notaris & PPAT</p>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-date" id="hdrDate"></div>
+      <button class="icon-btn" onclick="openTab('config')" title="Konfigurasi">⚙️</button>
+      <button class="icon-btn danger" onclick="confirmLogout()" title="Logout">🔓</button>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="nav no-select">
+    <button class="ntab active" id="ntab-layanan" onclick="openTab('layanan')">
+      <span class="ti">📋</span><span>Layanan</span>
+    </button>
+    <button class="ntab" id="ntab-dashboard" onclick="openTab('dashboard')">
+      <span class="ti">📊</span><span>Dashboard</span>
+    </button>
+    <button class="ntab" id="ntab-config" onclick="openTab('config')">
+      <span class="ti">⚙️</span><span>Konfigurasi</span>
+    </button>
+  </nav>
+
+  <!-- TABS -->
+  <div class="tabs">
+
+    <!-- ── TAB LAYANAN ── -->
+    <div class="tc active" id="tc-layanan">
+      <div class="sec-head">
+        <div><div class="sec-title">Form Layanan</div><div class="sec-sub">Kelola berkas layanan</div></div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+          <button class="bg bg-sm" onclick="openFilterSheet()" id="filterBtn">🔍 Filter</button>
+          <button class="bg bg-sm" onclick="exportLayananExcel()">📥</button>
+          <button class="bg bg-sm" onclick="printLayanan()">🖨️</button>
+          <div class="vtoggle">
+            <button class="vtbtn active" id="vv" onclick="setView('v')" title="Vertikal">☰</button>
+            <button class="vtbtn" id="vh" onclick="setView('h')" title="Horizontal">⊞</button>
+          </div>
+          <button class="bc" onclick="openFormModal()" style="padding:9px 14px;font-size:13px;">✚ Tambah</button>
+        </div>
+      </div>
+      <!-- Active filters badge -->
+      <div id="activeFiltersBadge" style="display:none;margin-bottom:10px;"></div>
+      <!-- Layanan list -->
+      <div id="layananList"></div>
+    </div>
+
+    <!-- ── TAB DASHBOARD ── -->
+    <div class="tc" id="tc-dashboard">
+      <div class="sec-head">
+        <div><div class="sec-title">Dashboard Keuangan</div><div class="sec-sub">Rekap finansial kenotariatan</div></div>
+        <div style="display:flex;gap:6px;">
+          <button class="bg bg-sm" onclick="exportExcel()">📥 Excel</button>
+          <button class="bc" onclick="printDash()" style="padding:9px 14px;font-size:12px;">🖨️ Print</button>
+        </div>
+      </div>
+      <!-- DB filters -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;">
+        <select class="fc" id="dbPeriode" onchange="onDbPeriode()" style="flex:1;min-width:120px;padding:9px 12px;font-size:13px;">
+          <option value="all">Semua Waktu</option>
+          <option value="thisMonth">Bulan Ini</option>
+          <option value="lastMonth">Bulan Lalu</option>
+          <option value="thisYear">Tahun Ini</option>
+          <option value="custom">Custom</option>
+        </select>
+        <select class="fc" id="dbJenis" onchange="renderDashboard()" style="flex:1;min-width:100px;padding:9px 12px;font-size:13px;">
+          <option value="">Semua Jenis</option>
+        </select>
+      </div>
+      <div id="dbCustom" style="display:none;margin-bottom:12px;">
+        <div class="fg2">
+          <div class="fg"><label>Dari</label><input type="date" class="fc" id="dbFrom" onchange="renderDashboard()"></div>
+          <div class="fg"><label>Sampai</label><input type="date" class="fc" id="dbTo" onchange="renderDashboard()"></div>
+        </div>
+      </div>
+      <!-- Stats -->
+      <div class="stats" id="statsGrid">
+        <div class="sc"><div class="sc-icon">💰</div><div class="sc-lbl">Total Omset</div><div class="sc-val tg" id="stOmset">Rp 0</div><div class="sc-sub" id="stOmsetC">0 layanan</div></div>
+        <div class="sc"><div class="sc-icon">📤</div><div class="sc-lbl">Pengeluaran</div><div class="sc-val tr" id="stPeng">Rp 0</div><div class="sc-sub">Total biaya</div></div>
+        <div class="sc"><div class="sc-icon">✅</div><div class="sc-lbl">Profit Bersih</div><div class="sc-val tgr" id="stProfit">Rp 0</div><div class="pbar"><div class="pbar-f" id="pbarFill" style="width:0%"></div></div></div>
+        <div class="sc"><div class="sc-icon">📁</div><div class="sc-lbl">Total Berkas</div><div class="sc-val" id="stBerkas">0</div><div class="sc-sub" id="stSelesai">0 selesai</div></div>
+      </div>
+      <!-- Breakdown jenis -->
+      <div class="card">
+        <div class="card-h"><h3>📊 Per Jenis Layanan</h3></div>
+        <div id="dbJenisBreak" style="padding:0;"></div>
+      </div>
+      <!-- Zakat + Nisab side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
+        <!-- Zakat panel (compact) -->
+        <div class="zakat" style="margin-top:0;">
+          <h4>🕌 Zakat Maal (2.5%)</h4>
+          <div class="zakat-amt" id="zakatAmt" style="font-size:20px;">Rp 0</div>
+          <div class="zakat-note" id="zakatNote">Dari profit bersih</div>
+          <div style="margin-top:8px;font-size:10px;color:rgba(250,247,242,0.25);">QS. Al-Baqarah: 110</div>
+        </div>
+        <!-- Nisab calculator -->
+        <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(184,150,90,0.22);border-radius:14px;padding:14px;">
+          <div style="font-family:var(--fd);font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">📐 Cek Nisab</div>
+          <div class="fg" style="margin-bottom:8px;">
+            <label style="font-size:10px;">Harga Emas/gram (Rp)</label>
+            <input type="number" class="fc" id="hargaEmas" placeholder="1.500.000" inputmode="numeric" min="0" style="text-transform:none;padding:8px 10px;font-size:12px;" oninput="hitungNisab()">
+          </div>
+          <div id="nisabResult" style="font-size:11px;line-height:1.6;color:rgba(250,247,242,0.55);">
+            Masukkan harga emas untuk cek nisab
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB CONFIG ── -->
+    <div class="tc" id="tc-config">
+      <div class="sec-head"><div><div class="sec-title">Konfigurasi</div><div class="sec-sub">Kelola data & tampilan</div></div></div>
+
+      <!-- Identitas -->
+      <div class="card">
+        <div class="card-h"><h3>🏛️ Identitas Kantor</h3></div>
+        <div class="card-b">
+          <div class="fg"><label>Logo (URL Gambar)</label><input type="text" class="fc" id="cfgLogo" placeholder="https://... atau kosong" style="text-transform:none;"></div>
+          <div class="fg"><label>Background (URL / warna hex)</label>
+            <div style="display:flex;gap:8px;">
+              <input type="text" class="fc" id="cfgBg" placeholder="https://... atau #1a2540" style="text-transform:none;flex:1;">
+              <button class="bg bg-sm" onclick="previewBg()">👁️</button>
+            </div>
+            <div style="font-size:11px;color:rgba(250,247,242,0.35);margin-top:4px;">Bisa URL gambar atau kode warna hex</div>
+          </div>
+          <div class="fg"><label>Nama Notaris</label><input type="text" class="fc" id="cfgNama" placeholder="Nama lengkap + gelar"></div>
+          <div class="fg"><label>Nomor SK/Jabatan</label><input type="text" class="fc" id="cfgNo" placeholder="No. SK Pengangkatan"></div>
+          <div class="fg"><label>Alamat Kantor</label><textarea class="fc" id="cfgAlamat" placeholder="Alamat lengkap" rows="2"></textarea></div>
+          <div class="fg"><label>No. Telepon</label><input type="text" class="fc" id="cfgTelp" placeholder="08xx-xxxx"></div>
+          <div class="fg"><label>Tagline Login</label><input type="text" class="fc" id="cfgTagline" placeholder="Sistem Manajemen Kenotariatan"></div>
+          <button class="bc" onclick="saveIdentitas()" style="width:100%;justify-content:center;margin-top:4px;">💾 SIMPAN IDENTITAS</button>
+        </div>
+      </div>
+
+      <!-- Tampilan Layanan -->
+      <div class="card">
+        <div class="card-h"><h3>🖥️ Tampilan Daftar Layanan</h3></div>
+        <div class="card-b">
+          <div class="fg">
+            <label>Mode Tampilan Default</label>
+            <select class="fc" id="cfgView" onchange="saveCfgView()">
+              <option value="v">Vertikal (kartu ke bawah)</option>
+              <option value="h">Horizontal (tabel)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tema Warna -->
+      <div class="card">
+        <div class="card-h"><h3>🎨 Tema Warna</h3></div>
+        <div class="card-b">
+          <div class="swatches" id="colorSwatches"></div>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="card">
+        <div class="card-h"><h3>🔐 Keamanan</h3></div>
+        <div class="card-b">
+          <div class="fg"><label>Username</label><input type="text" class="fc" id="cfgUser" placeholder="Username" autocapitalize="none" autocorrect="off" spellcheck="false" style="text-transform:none;"></div>
+          <div class="fg"><label>Password Lama</label><input type="password" class="fc" id="cfgPo" placeholder="Password saat ini" autocomplete="current-password" style="text-transform:none;letter-spacing:0.05em;"></div>
+          <div class="fg"><label>Password Baru</label><input type="password" class="fc" id="cfgPn" placeholder="Password baru (min 6 karakter)" autocomplete="new-password" style="text-transform:none;letter-spacing:0.05em;"></div>
+          <div class="fg"><label>Konfirmasi Password</label><input type="password" class="fc" id="cfgPc" placeholder="Ulangi password baru" autocomplete="new-password" style="text-transform:none;letter-spacing:0.05em;"></div>
+          <button class="bc" onclick="savePass()" style="width:100%;justify-content:center;margin-top:4px;">🔑 UBAH PASSWORD</button>
+        </div>
+      </div>
+
+      <!-- Jenis Layanan -->
+      <div class="card">
+        <div class="card-h"><h3>📋 Jenis Layanan</h3></div>
+        <div class="card-b">
+          <div id="cfgJenisList"></div>
+          <div class="cfg-add">
+            <input type="text" class="fc" id="newJenis" placeholder="Jenis baru (mis: AJB)">
+            <button class="bc" onclick="addJenis()" style="padding:10px 14px;">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div class="card">
+        <div class="card-h"><h3>🔄 Status Tracking</h3></div>
+        <div class="card-b">
+          <div id="cfgStatusList"></div>
+          <div class="cfg-add">
+            <input type="text" class="fc" id="newStatus" placeholder="Status baru (mis: Drafting)">
+            <button class="bc" onclick="addStatus()" style="padding:10px 14px;">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item Pengeluaran -->
+      <div class="card">
+        <div class="card-h"><h3>🧾 Item Pengeluaran</h3></div>
+        <div class="card-b">
+          <div id="cfgItemList"></div>
+          <div class="cfg-add">
+            <input type="text" class="fc" id="newItem" placeholder="Item baru (mis: Materai)">
+            <button class="bc" onclick="addItem()" style="padding:10px 14px;">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tabs -->
+</div><!-- /app -->
+
+<!-- ── MODAL FORM LAYANAN ── -->
+<div class="mo hidden" id="mForm">
+  <div class="mb">
+    <div class="mh">
+      <div>
+        <h3 id="mFormTitle">Tambah Layanan Baru</h3>
+        <p>Isi data berkas layanan</p>
+      </div>
+      <button class="mc" onclick="closeM('mForm')">✕</button>
+    </div>
+    <div class="mbody">
+      <div class="slbl">Data Administrasi</div>
+      <div class="fg"><label>Tanggal Masuk</label><input type="date" class="fc" id="fTgl"></div>
+      <div class="fg"><label>Nama Klien</label><input type="text" class="fc" id="fNama" placeholder="Nama lengkap klien"></div>
+      <div class="fg"><label>No. HP</label><input type="text" class="fc" id="fHp" placeholder="08xx-xxxx" inputmode="tel"></div>
+      <div class="fg"><label>Alamat</label><textarea class="fc" id="fAlamat" placeholder="Alamat klien" rows="2"></textarea></div>
+      <div class="fg2">
+        <div class="fg full"><label>Jenis Layanan</label><select class="fc" id="fJenis"></select></div>
+        <div class="fg full"><label>Status Tracking</label><select class="fc" id="fStatus"></select></div>
+      </div>
+      <div class="fg"><label>Biaya Layanan (Rp)</label><input type="number" class="fc" id="fBiaya" placeholder="0" inputmode="numeric" min="0" style="text-transform:none;"></div>
+      <div class="fg"><label>Catatan</label><input type="text" class="fc" id="fCatatan" placeholder="Catatan tambahan"></div>
+    </div>
+    <div class="mfoo">
+      <button class="bg" onclick="closeM('mForm')">Batal</button>
+      <button class="bc" onclick="saveLayanan()">💾 SIMPAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL PENGELUARAN ── -->
+<div class="mo hidden" id="mPengeluaran">
+  <div class="mb">
+    <div class="mh">
+      <div>
+        <h3>Item Pengeluaran</h3>
+        <p id="mPengSub">—</p>
+      </div>
+      <button class="mc" onclick="closeM('mPengeluaran')">✕</button>
+    </div>
+    <div class="mbody">
+      <!-- Input form -->
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-h"><h3>➕ Tambah Item</h3></div>
+        <div class="card-b">
+          <div class="fg"><label>Pilih Item</label><select class="fc" id="pItem"></select></div>
+          <div class="fg"><label>Catatan / Keterangan</label><input type="text" class="fc" id="pCatatan" placeholder="Mis: 3 lembar, untuk akta no.xxx"></div>
+          <div class="fg"><label>Jumlah (Rp)</label><input type="number" class="fc" id="pJumlah" placeholder="0" inputmode="numeric" min="0" style="text-transform:none;"></div>
+          <div class="fg"><label>Note Tambahan</label><textarea class="fc" id="pNote" placeholder="Keterangan detail pengeluaran ini" rows="2"></textarea></div>
+          <button class="bc" onclick="addPengItem()" style="width:100%;justify-content:center;margin-top:4px;">+ TAMBAH ITEM</button>
+        </div>
+      </div>
+      <hr>
+      <div class="slbl">Daftar Pengeluaran</div>
+      <div id="pengList"></div>
+      <div class="ptotal">
+        <span>Total Pengeluaran</span>
+        <span id="pengTotal">Rp 0</span>
+      </div>
+    </div>
+    <div class="mfoo">
+      <button class="bc" onclick="closeM('mPengeluaran')" style="flex:1;justify-content:center;">✓ SELESAI</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL FILTER ── -->
+<div class="mo hidden" id="mFilter">
+  <div class="mb">
+    <div class="mh">
+      <div><h3>Filter & Cari</h3><p>Saring daftar layanan</p></div>
+      <button class="mc" onclick="closeM('mFilter')">✕</button>
+    </div>
+    <div class="mbody filter-sheet">
+      <div class="fg"><label>Cari Nama / Jenis</label><input type="text" class="fc" id="fSearch" placeholder="Ketik nama klien..." style="text-transform:none;"></div>
+      <div class="fg"><label>Jenis Layanan</label><select class="fc" id="fJenisF"><option value="">Semua Jenis</option></select></div>
+      <div class="fg"><label>Status</label><select class="fc" id="fStatusF"><option value="">Semua Status</option></select></div>
+      <div class="fg2">
+        <div class="fg"><label>Tanggal Dari</label><input type="date" class="fc" id="fFrom"></div>
+        <div class="fg"><label>Tanggal Sampai</label><input type="date" class="fc" id="fTo"></div>
+      </div>
+    </div>
+    <div class="mfoo">
+      <button class="bg" onclick="clearFilter()">✕ Reset</button>
+      <button class="bc" onclick="applyFilter()">✓ TERAPKAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL KONFIRMASI HAPUS ── -->
+<div class="mo hidden" id="mConfirm">
+  <div class="mb center">
+    <div class="mh">
+      <div><h3 id="mConfTitle">Konfirmasi</h3></div>
+      <button class="mc" onclick="closeM('mConfirm')">✕</button>
+    </div>
+    <div class="mbody">
+      <p id="mConfMsg" style="font-size:14px;color:rgba(250,247,242,0.8);line-height:1.6;"></p>
+    </div>
+    <div class="mfoo">
+      <button class="bg" onclick="closeM('mConfirm')">Batal</button>
+      <button class="bc bd" id="mConfOk" style="background:rgba(200,50,50,0.6);border:none;color:#fff;">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL HAPUS + PASSWORD ── -->
+<div class="mo hidden" id="mDelPass">
+  <div class="mb center">
+    <div class="mh">
+      <div><h3>🗑️ Konfirmasi Hapus</h3></div>
+      <button class="mc" onclick="closeM('mDelPass')">✕</button>
+    </div>
+    <div class="mbody">
+      <div style="background:rgba(200,50,50,0.1);border:1px solid rgba(200,50,50,0.25);border-radius:10px;padding:12px 14px;margin-bottom:16px;">
+        <p style="font-size:13px;color:#ff9090;font-weight:500;" id="mDelMsg">Hapus layanan ini?</p>
+        <p style="font-size:11.5px;color:rgba(250,247,242,0.45);margin-top:4px;">Tindakan ini tidak dapat dibatalkan.</p>
+      </div>
+      <div class="fg">
+        <label>Masukkan Password untuk Konfirmasi</label>
+        <input type="password" class="fc" id="mDelPassInput" placeholder="Password Anda" autocomplete="off" style="text-transform:none;">
+      </div>
+      <div id="mDelErr" style="color:#ff8080;font-size:12px;margin-top:6px;display:none;">Password salah. Hapus dibatalkan.</div>
+    </div>
+    <div class="mfoo">
+      <button class="bg" onclick="closeM('mDelPass')">Batal</button>
+      <button class="bc" id="mDelOk" style="background:rgba(200,50,50,0.75);border:none;color:#fff;box-shadow:none;">🗑️ HAPUS</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast">✓ Tersimpan</div>
+
+<!-- COPYRIGHT -->
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:2;text-align:center;padding:4px;font-size:10px;color:rgba(212,184,122,0.25);pointer-events:none;background:linear-gradient(transparent,rgba(5,10,22,0.4));letter-spacing:0.3px;">
+  Copyright ©2026 SRISP &nbsp;|&nbsp; v1.6
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let S = {
+  auth:{ user:'admin', pass:'admin123', loggedIn:false },
+  id:{ nama:'Muhammad Haikal Arsyi, ST., M.Kn.', no:'Notaris & PPAT', alamat:'', telp:'', logo:'', bg:'', tagline:'Sistem Manajemen Kenotariatan' },
+  jenis:['AJB','PT','CV','Wasiat','Perjanjian Kawin','Balik Nama','APHT','Hibah','Cessie','Kuasa'],
+  status:['Drafting','Proses BPN','Menunggu TTD','Selesai','Pending'],
+  items:['Materai','PNBP','Cetak Akta','Kurir','BBM/Transportasi','Fotokopi','Legalisasi','Lain-lain'],
+  layanan:[],
+  tema:'#b8965a',
+  viewMode:'v',
+  filters:{ search:'', jenis:'', status:'', from:'', to:'' },
+  pendingBg:''
+};
+function loginScalesSVG(){
+  return `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="22.5" y="6" width="3" height="32" rx="1.5" fill="#d4b87a"/>
+    <rect x="10" y="36" width="28" height="3" rx="1.5" fill="#d4b87a"/>
+    <rect x="10" y="9" width="28" height="2.5" rx="1.25" fill="#d4b87a"/>
+    <line x1="13" y1="11.5" x2="9" y2="22" stroke="#d4b87a" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="35" y1="11.5" x2="39" y2="22" stroke="#d4b87a" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M5 22 Q9 28 13 22" stroke="#d4b87a" stroke-width="1.5" fill="rgba(184,150,90,0.18)" stroke-linecap="round"/>
+    <path d="M35 22 Q39 28 43 22" stroke="#d4b87a" stroke-width="1.5" fill="rgba(184,150,90,0.18)" stroke-linecap="round"/>
+    <circle cx="24" cy="7" r="2.5" fill="#d4b87a"/>
+  </svg>`;
+}
+
+const DEFAULT_BG = 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80';
+
+const TEMAS=[
+  {c:'#b8965a',l:'Gold'},   {c:'#7b9e6b',l:'Emerald'},
+  {c:'#6b8ec0',l:'Sapphire'},{c:'#a0706a',l:'Rose'},
+  {c:'#8a6eb8',l:'Amethyst'},{c:'#5a9e8e',l:'Teal'},
+];
+let editId=null, pengId=null, idleTimer=null, toastT=null;
+
+// ═══════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════
+function sv(){try{localStorage.setItem('nhaikal2',JSON.stringify(S));}catch(e){}}
+function ld(){try{const d=localStorage.getItem('nhaikal2');if(d){const p=JSON.parse(d);S={...S,...p};}}catch(e){}}
+
+// ═══════════════════════════════════════════
+// IDLE TIMER — 10 min auto logout
+// ═══════════════════════════════════════════
+function resetIdle(){
+  clearTimeout(idleTimer);
+  if(S.auth.loggedIn) idleTimer=setTimeout(()=>{S.auth.loggedIn=false;sv();showLogin();},600000);
+}
+['touchstart','click','keydown','scroll'].forEach(e=>document.addEventListener(e,resetIdle,{passive:true}));
+
+// ═══════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════
+function showLogin(){
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('app').style.visibility='hidden';
+  document.getElementById('lu').value='';
+  document.getElementById('lp').value='';
+  document.getElementById('loginErr').style.display='none';
+}
+function doLogin(){
+  const u=document.getElementById('lu').value.trim().toLowerCase();
+  const p=document.getElementById('lp').value;
+  if(u===S.auth.user.toLowerCase()&&p===S.auth.pass){
+    S.auth.loggedIn=true; sv();
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('app').style.visibility='visible';
+    resetIdle();
+    init();
+  } else {
+    document.getElementById('loginErr').style.display='block';
+    document.getElementById('lp').value='';
+  }
+}
+function confirmLogout(){
+  if(!confirm('Keluar dari aplikasi?')) return;
+  S.auth.loggedIn=false; sv(); clearTimeout(idleTimer); showLogin();
+}
+document.getElementById('lp').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('lu').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('lp').focus();});
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+function init(){
+  updateHeader(); applyTheme(); applyBg();
+  populateAll();
+  renderLayanan(); renderDashboard(); renderConfig();
+  updateDateTick(); setInterval(updateDateTick,30000);
+  // set view toggle
+  setViewUI(S.viewMode);
+}
+
+function updateDateTick(){
+  const n=new Date();
+  const d=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+  const m=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+  document.getElementById('hdrDate').innerHTML=
+    `${d[n.getDay()]} ${n.getDate()} ${m[n.getMonth()]}<br>${pad(n.getHours())}:${pad(n.getMinutes())}`;
+}
+
+function updateHeader(){
+  const id=S.id;
+  document.getElementById('hdrName').textContent=id.nama||'Notaris';
+  document.getElementById('hdrSub').textContent=(id.no||'Notaris')+(id.telp?' · '+id.telp:'');
+  document.getElementById('loginTitle').textContent=(id.nama||'').split(',')[0]||'Notaris';
+  document.getElementById('loginTagline').textContent=id.tagline||'Sistem Manajemen Kenotariatan';
+  const lg=id.logo;
+  // Header logo (small square)
+  const hdrEl=document.getElementById('hdrLogo');
+  if(lg){hdrEl.innerHTML=`<img src="${lg}" alt="logo" onerror="this.parentElement.textContent='⚖️'">`;}
+  else{hdrEl.textContent='⚖️';}
+  // Login logo (larger, square, SVG scales)
+  const loginEl=document.getElementById('loginLogo');
+  if(lg){loginEl.innerHTML=`<img src="${lg}" alt="logo" onerror="this.parentElement.innerHTML=loginScalesSVG()">`;}
+  else{loginEl.innerHTML=loginScalesSVG();}
+}
+
+function applyTheme(){
+  const c=S.tema||'#b8965a';
+  const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16);
+  const dk=`rgb(${Math.max(0,r-40)},${Math.max(0,g-40)},${Math.max(0,b-40)})`;
+  const lt=`rgb(${Math.min(255,r+40)},${Math.min(255,g+40)},${Math.min(255,b+40)})`;
+  document.documentElement.style.setProperty('--gold',c);
+  document.documentElement.style.setProperty('--gold-d',dk);
+  document.documentElement.style.setProperty('--gold-l',lt);
+}
+
+function applyBg(){
+  const bg=S.id.bg||'';
+  const bgEl=document.getElementById('bgLayer');
+  const loginEl=document.getElementById('loginScreen');
+  let url='';
+  if(!bg){
+    url=`url("${DEFAULT_BG}")`;
+    bgEl.style.backgroundImage=url;
+    bgEl.style.backgroundSize='cover';
+    bgEl.style.backgroundPosition='center bottom';
+    bgEl.style.backgroundColor='';
+  } else if(bg.startsWith('#')||bg.startsWith('rgb')){
+    bgEl.style.backgroundImage='';
+    bgEl.style.backgroundColor=bg;
+    url=`url("${DEFAULT_BG}")`; // login still shows building
+  } else {
+    url=`url('${bg}')`;
+    bgEl.style.backgroundImage=url;
+    bgEl.style.backgroundSize='cover';
+    bgEl.style.backgroundPosition='center';
+    bgEl.style.backgroundColor='';
+  }
+  // Always show building bg on login screen (safe, no app bleed-through)
+  loginEl.style.backgroundImage=`url("${DEFAULT_BG}")`;
+  loginEl.style.backgroundSize='cover';
+  loginEl.style.backgroundPosition='center bottom';
+}
+
+function previewBg(){
+  const v=document.getElementById('cfgBg').value.trim();
+  S.pendingBg=v;
+  const el=document.getElementById('bgLayer');
+  if(!v){el.style.backgroundImage='';el.style.background='linear-gradient(135deg,#1a2540 0%,#243058 55%,#1a2540 100%)';}
+  else if(v.startsWith('#')||v.startsWith('rgb')){el.style.backgroundImage='';el.style.backgroundColor=v;}
+  else{el.style.backgroundImage=`url('${v}')`;el.style.backgroundSize='cover';el.style.backgroundPosition='center';}
+  toast('👁️ Preview background');
+}
+
+// ═══════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════
+function openTab(t){
+  ['layanan','dashboard','config'].forEach(x=>{
+    document.getElementById('tc-'+x).classList.toggle('active',x===t);
+    document.getElementById('ntab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='dashboard'){renderDashboard();}
+  if(t==='config'){renderConfig();}
+}
+
+// ═══════════════════════════════════════════
+// DROPDOWNS
+// ═══════════════════════════════════════════
+function populateAll(){
+  fillSel('fJenis',S.jenis); fillSel('fStatus',S.status);
+  fillSel('fJenisF',['', ...S.jenis]); fillSel('fStatusF',['', ...S.status]);
+  fillSel('dbJenis',['', ...S.jenis]);
+  fillSel('pItem',S.items);
+}
+function fillSel(id,arr){
+  const el=document.getElementById(id);if(!el)return;
+  const pv=el.value;
+  el.innerHTML=arr.map(v=>`<option value="${v}">${v||'Semua'}</option>`).join('');
+  if(pv)el.value=pv;
+}
+
+// ═══════════════════════════════════════════
+// VIEW MODE
+// ═══════════════════════════════════════════
+function setView(m){
+  S.viewMode=m; sv();
+  setViewUI(m);
+  renderLayanan();
+}
+function setViewUI(m){
+  document.getElementById('vv').classList.toggle('active',m==='v');
+  document.getElementById('vh').classList.toggle('active',m==='h');
+}
+
+// ═══════════════════════════════════════════
+// LAYANAN
+// ═══════════════════════════════════════════
+function openFormModal(id=null){
+  editId=id;
+  fillSel('fJenis',S.jenis); fillSel('fStatus',S.status);
+  document.getElementById('mFormTitle').textContent=id?'Edit Layanan':'Tambah Layanan Baru';
+  if(id){
+    const l=S.layanan.find(x=>x.id===id);if(!l)return;
+    document.getElementById('fTgl').value=l.tanggal;
+    document.getElementById('fNama').value=l.nama;
+    document.getElementById('fHp').value=l.hp||'';
+    document.getElementById('fAlamat').value=l.alamat||'';
+    document.getElementById('fJenis').value=l.jenis;
+    document.getElementById('fStatus').value=l.status;
+    document.getElementById('fBiaya').value=l.biaya;
+    document.getElementById('fCatatan').value=l.catatan||'';
+  } else {
+    document.getElementById('fTgl').value=todayStr();
+    ['fNama','fHp','fAlamat','fCatatan'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('fBiaya').value='';
+  }
+  openM('mForm');
+}
+
+function saveLayanan(){
+  const nama=document.getElementById('fNama').value.trim();
+  if(!nama){toast('❌ Nama klien wajib diisi','#c03030');return;}
+  const biaya=parseFloat(document.getElementById('fBiaya').value)||0;
+  if(editId){
+    const l=S.layanan.find(x=>x.id===editId);
+    if(l){
+      l.tanggal=document.getElementById('fTgl').value;
+      l.nama=nama.toUpperCase();
+      l.hp=document.getElementById('fHp').value.trim();
+      l.alamat=document.getElementById('fAlamat').value.trim().toUpperCase();
+      l.jenis=document.getElementById('fJenis').value;
+      l.status=document.getElementById('fStatus').value;
+      l.biaya=biaya;
+      l.catatan=document.getElementById('fCatatan').value.trim().toUpperCase();
+    }
+  } else {
+    S.layanan.unshift({
+      id:Date.now().toString(),
+      tanggal:document.getElementById('fTgl').value||todayStr(),
+      nama:nama.toUpperCase(),
+      hp:document.getElementById('fHp').value.trim(),
+      alamat:document.getElementById('fAlamat').value.trim().toUpperCase(),
+      jenis:document.getElementById('fJenis').value,
+      status:document.getElementById('fStatus').value,
+      biaya,
+      catatan:document.getElementById('fCatatan').value.trim().toUpperCase(),
+      pengeluaran:[]
+    });
+  }
+  sv(); closeM('mForm'); renderLayanan(); toast('✓ Layanan tersimpan');
+}
+
+let delTargetId = null;
+function delLayanan(id){
+  const l=S.layanan.find(x=>x.id===id);
+  if(!l) return;
+  delTargetId = id;
+  document.getElementById('mDelMsg').textContent = `Hapus layanan "${l.nama}" (${l.jenis})?`;
+  document.getElementById('mDelPassInput').value = '';
+  document.getElementById('mDelErr').style.display = 'none';
+  openM('mDelPass');
+  setTimeout(()=>document.getElementById('mDelPassInput').focus(), 300);
+}
+document.getElementById('mDelOk').onclick = () => {
+  const pass = document.getElementById('mDelPassInput').value;
+  if(pass !== S.auth.pass){
+    document.getElementById('mDelErr').style.display = 'block';
+    document.getElementById('mDelPassInput').value = '';
+    document.getElementById('mDelPassInput').focus();
+    return;
+  }
+  S.layanan = S.layanan.filter(x=>x.id!==delTargetId);
+  delTargetId = null;
+  sv(); closeM('mDelPass'); renderLayanan(); toast('🗑️ Layanan dihapus');
+};
+
+// ── FILTERED DATA ──
+function getFiltered(){
+  const f=S.filters;
+  return S.layanan.filter(l=>{
+    if(f.search&&!l.nama.toLowerCase().includes(f.search.toLowerCase())&&!l.jenis.toLowerCase().includes(f.search.toLowerCase()))return false;
+    if(f.jenis&&l.jenis!==f.jenis)return false;
+    if(f.status&&l.status!==f.status)return false;
+    if(f.from&&l.tanggal<f.from)return false;
+    if(f.to&&l.tanggal>f.to)return false;
+    return true;
+  });
+}
+
+// ── RENDER ──
+function renderLayanan(){
+  const data=getFiltered();
+  const el=document.getElementById('layananList');
+  // Filter badge
+  const fb=document.getElementById('activeFiltersBadge');
+  const hasF=S.filters.search||S.filters.jenis||S.filters.status||S.filters.from||S.filters.to;
+  if(hasF){
+    fb.style.display='flex';
+    fb.innerHTML=`<span style="font-size:12px;color:rgba(250,247,242,0.5);">Filter aktif · ${data.length} hasil</span>
+      <button class="bg bg-sm" onclick="clearFilter()" style="margin-left:auto;">✕ Hapus Filter</button>`;
+    fb.style.cssText='display:flex;align-items:center;gap:8px;background:rgba(184,150,90,0.08);border:1px solid rgba(184,150,90,0.2);border-radius:8px;padding:8px 12px;margin-bottom:10px;';
+  } else { fb.style.display='none'; }
+
+  if(!data.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">📂</div><p>Belum ada layanan${hasF?' yang cocok dengan filter':'. Klik + Tambah.'}</p></div>`;
+    return;
+  }
+  if(S.viewMode==='h'){renderHorizontal(data,el);}
+  else{renderVertical(data,el);}
+}
+
+function renderVertical(data,el){
+  el.innerHTML=data.map(l=>{
+    const tp=getTotalP(l);
+    const sisa=l.biaya-tp;
+    return `<div class="lv-item">
+      <div class="lv-top">
+        <div class="lv-row">
+          <span class="lv-name">${l.nama}</span>
+          <span class="lv-date">${fmtDate(l.tanggal)}</span>
+        </div>
+        ${l.hp?`<div style="font-size:11.5px;color:rgba(250,247,242,0.4);margin-bottom:4px;">${l.hp}</div>`:''}
+        <div class="lv-meta">
+          <span class="badge bb">${l.jenis}</span>
+          <span class="badge ${sBadge(l.status)}">${l.status}</span>
+        </div>
+        ${l.catatan?`<div style="font-size:11px;color:rgba(250,247,242,0.35);margin-top:6px;font-style:italic;">${l.catatan}</div>`:''}
+      </div>
+      <div class="lv-bottom">
+        <div class="lv-fin">
+          <div class="fin-item"><div class="fin-lbl">Biaya</div><div class="fin-val tg">${fmtRp(l.biaya)}</div></div>
+          <div class="fin-item"><div class="fin-lbl">Pengeluaran</div><div class="fin-val tr">${fmtRp(tp)}</div></div>
+          <div class="fin-item"><div class="fin-lbl">Sisa</div><div class="fin-val" style="${sisa<0?'color:#ff9090':'color:#7de8a8'}">${fmtRp(sisa)}</div></div>
+        </div>
+        <div class="lv-acts">
+          <button class="bg bg-sm" onclick="openPeng('${l.id}')">🧾 ${l.pengeluaran.length}</button>
+          <button class="bg bg-sm" onclick="openFormModal('${l.id}')">✏️</button>
+          <button class="bg bg-sm bd" onclick="delLayanan('${l.id}')">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderHorizontal(data,el){
+  el.innerHTML=`<div class="card"><div class="tbl-wrap"><table>
+    <thead><tr><th>Nama Klien</th><th>Jenis</th><th>Status</th><th>Biaya</th><th>Peng.</th><th>Sisa</th><th>Aksi</th></tr></thead>
+    <tbody>${data.map(l=>{
+      const tp=getTotalP(l);const sisa=l.biaya-tp;
+      return `<tr>
+        <td><div style="font-weight:500;font-size:13px;">${l.nama}</div><div style="font-size:10.5px;color:rgba(250,247,242,0.38);">${fmtDate(l.tanggal)}</div></td>
+        <td><span class="badge bb">${l.jenis}</span></td>
+        <td><span class="badge ${sBadge(l.status)}">${l.status}</span></td>
+        <td class="tg" style="white-space:nowrap;font-size:12.5px;">${fmtRp(l.biaya)}</td>
+        <td class="tr" style="white-space:nowrap;font-size:12.5px;">${fmtRp(tp)}</td>
+        <td style="white-space:nowrap;font-size:12.5px;${sisa<0?'color:#ff9090':'color:#7de8a8'}">${fmtRp(sisa)}</td>
+        <td><div style="display:flex;gap:5px;">
+          <button class="bg bg-sm" onclick="openPeng('${l.id}')">🧾</button>
+          <button class="bg bg-sm" onclick="openFormModal('${l.id}')">✏️</button>
+          <button class="bg bg-sm bd" onclick="delLayanan('${l.id}')">🗑️</button>
+        </div></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table></div></div>`;
+}
+
+// ── FILTER ──
+function openFilterSheet(){
+  fillSel('fJenisF',['', ...S.jenis]); fillSel('fStatusF',['', ...S.status]);
+  document.getElementById('fSearch').value=S.filters.search||'';
+  document.getElementById('fJenisF').value=S.filters.jenis||'';
+  document.getElementById('fStatusF').value=S.filters.status||'';
+  document.getElementById('fFrom').value=S.filters.from||'';
+  document.getElementById('fTo').value=S.filters.to||'';
+  openM('mFilter');
+}
+function applyFilter(){
+  S.filters.search=document.getElementById('fSearch').value.trim();
+  S.filters.jenis=document.getElementById('fJenisF').value;
+  S.filters.status=document.getElementById('fStatusF').value;
+  S.filters.from=document.getElementById('fFrom').value;
+  S.filters.to=document.getElementById('fTo').value;
+  closeM('mFilter'); renderLayanan();
+  const hasF=S.filters.search||S.filters.jenis||S.filters.status||S.filters.from||S.filters.to;
+  const btn=document.getElementById('filterBtn');
+  btn.textContent=hasF?'🔍 Filter ●':'🔍 Filter';
+  btn.style.borderColor=hasF?'var(--gold)':'';
+}
+function clearFilter(){
+  S.filters={search:'',jenis:'',status:'',from:'',to:''};
+  document.getElementById('filterBtn').textContent='🔍 Filter';
+  document.getElementById('filterBtn').style.borderColor='';
+  closeM('mFilter'); renderLayanan();
+}
+
+// ═══════════════════════════════════════════
+// PENGELUARAN
+// ═══════════════════════════════════════════
+function openPeng(id){
+  pengId=id;
+  const l=S.layanan.find(x=>x.id===id);if(!l)return;
+  fillSel('pItem',S.items);
+  document.getElementById('mPengSub').textContent=`${l.nama} — ${l.jenis}`;
+  document.getElementById('pCatatan').value='';
+  document.getElementById('pJumlah').value='';
+  document.getElementById('pNote').value='';
+  renderPengList();
+  openM('mPengeluaran');
+}
+function addPengItem(){
+  const l=S.layanan.find(x=>x.id===pengId);if(!l)return;
+  const item=document.getElementById('pItem').value;
+  const catatan=document.getElementById('pCatatan').value.trim();
+  const jumlah=parseFloat(document.getElementById('pJumlah').value)||0;
+  const note=document.getElementById('pNote').value.trim();
+  if(!item||jumlah<=0){toast('❌ Pilih item & isi jumlah','#c03030');return;}
+  l.pengeluaran=l.pengeluaran||[];
+  l.pengeluaran.push({id:Date.now().toString(),item,catatan:catatan.toUpperCase(),jumlah,note:note.toUpperCase()});
+  document.getElementById('pCatatan').value='';
+  document.getElementById('pJumlah').value='';
+  document.getElementById('pNote').value='';
+  sv(); renderPengList(); renderLayanan(); toast('✓ Item ditambahkan');
+}
+function delPengItem(pid){
+  const l=S.layanan.find(x=>x.id===pengId);if(!l)return;
+  l.pengeluaran=l.pengeluaran.filter(p=>p.id!==pid);
+  sv(); renderPengList(); renderLayanan();
+}
+function renderPengList(){
+  const l=S.layanan.find(x=>x.id===pengId);
+  const el=document.getElementById('pengList');
+  if(!l||!l.pengeluaran.length){
+    el.innerHTML=`<div class="empty" style="padding:20px;"><p>Belum ada item pengeluaran</p></div>`;
+    document.getElementById('pengTotal').textContent='Rp 0';return;
+  }
+  el.innerHTML=l.pengeluaran.map(p=>`
+    <div class="pitem">
+      <div class="pitem-info">
+        <div class="pitem-name">${p.item}${p.catatan?' — '+p.catatan:''}</div>
+        ${p.note?`<div class="pitem-note">${p.note}</div>`:''}
+      </div>
+      <div class="pitem-amt">${fmtRp(p.jumlah)}</div>
+      <button class="bg bg-sm bd" onclick="delPengItem('${p.id}')" style="flex-shrink:0;">🗑️</button>
+    </div>
+  `).join('');
+  document.getElementById('pengTotal').textContent=fmtRp(getTotalP(l));
+}
+function getTotalP(l){return(l.pengeluaran||[]).reduce((s,p)=>s+(p.jumlah||0),0);}
+
+// ═══════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════
+function onDbPeriode(){
+  document.getElementById('dbCustom').style.display=
+    document.getElementById('dbPeriode').value==='custom'?'block':'none';
+  renderDashboard();
+}
+function renderDashboard(){
+  const periode=document.getElementById('dbPeriode')?.value||'all';
+  const dbJ=document.getElementById('dbJenis')?.value||'';
+  const now=new Date();let from='',to='';
+  if(periode==='thisMonth'){from=`${now.getFullYear()}-${pad(now.getMonth()+1)}-01`;to=todayStr();}
+  else if(periode==='lastMonth'){
+    const d=new Date(now.getFullYear(),now.getMonth()-1,1);
+    from=`${d.getFullYear()}-${pad(d.getMonth()+1)}-01`;
+    to=`${now.getFullYear()}-${pad(now.getMonth())}-${new Date(now.getFullYear(),now.getMonth(),0).getDate()}`;
+  }
+  else if(periode==='thisYear'){from=`${now.getFullYear()}-01-01`;to=todayStr();}
+  else if(periode==='custom'){from=document.getElementById('dbFrom')?.value||'';to=document.getElementById('dbTo')?.value||'';}
+  const data=S.layanan.filter(l=>{
+    if(from&&l.tanggal<from)return false;
+    if(to&&l.tanggal>to)return false;
+    if(dbJ&&l.jenis!==dbJ)return false;
+    return true;
+  });
+  const bruto=data.reduce((s,l)=>s+l.biaya,0);
+  const peng=data.reduce((s,l)=>s+getTotalP(l),0);
+  const profit=bruto-peng;
+  const selesai=data.filter(l=>l.status==='Selesai').length;
+  document.getElementById('stOmset').textContent=fmtRp(bruto);
+  document.getElementById('stOmsetC').textContent=data.length+' layanan';
+  document.getElementById('stPeng').textContent=fmtRp(peng);
+  document.getElementById('stProfit').textContent=fmtRp(profit);
+  document.getElementById('stBerkas').textContent=data.length;
+  document.getElementById('stSelesai').textContent=selesai+' selesai';
+  document.getElementById('zakatAmt').textContent=fmtRp(profit*0.025);
+  document.getElementById('zakatNote').textContent=`2.5% × ${fmtRp(profit)}`;
+  const pct=bruto>0?Math.min(100,(profit/bruto)*100):0;
+  document.getElementById('pbarFill').style.width=pct+'%';
+  // Breakdown
+  const jm={};
+  data.forEach(l=>{
+    if(!jm[l.jenis])jm[l.jenis]={count:0,nilai:0,peng:0};
+    jm[l.jenis].count++;jm[l.jenis].nilai+=l.biaya;jm[l.jenis].peng+=getTotalP(l);
+  });
+  const jk=Object.keys(jm);
+  const jel=document.getElementById('dbJenisBreak');
+  if(!jk.length){jel.innerHTML=`<div class="empty" style="padding:20px;"><p>Belum ada data</p></div>`;return;}
+  jel.innerHTML=jk.map(k=>{
+    const d=jm[k],pr=d.nilai-d.peng;
+    return `<div class="jt-row">
+      <div class="jt-name"><span class="badge bb">${k}</span></div>
+      <div class="jt-num" style="color:rgba(250,247,242,0.5);">${d.count} berkas</div>
+      <div class="jt-num tg" style="font-size:11.5px;">${fmtRp(d.nilai)}</div>
+      <div class="jt-num" style="font-size:11.5px;${pr<0?'color:#ff9090':'color:#7de8a8'}">${fmtRp(pr)}</div>
+    </div>`;
+  }).join('');
+  fillSel('dbJenis',['', ...S.jenis]);
+  document.getElementById('dbJenis').value=dbJ;
+}
+
+// Zakat nisab checker
+function hitungNisab(){
+  const harga = parseFloat(document.getElementById('hargaEmas').value)||0;
+  const el = document.getElementById('nisabResult');
+  if(!harga){ el.innerHTML='Masukkan harga emas untuk cek nisab'; el.style.color='rgba(250,247,242,0.45)'; return; }
+  // Get profit for this year as annual income approximation
+  const now = new Date();
+  const yearData = S.layanan.filter(l=>l.tanggal&&l.tanggal.startsWith(now.getFullYear().toString()));
+  const profitTahunan = yearData.reduce((s,l)=>s+(l.biaya-getTotalP(l)),0);
+  const nisab = harga * 85;
+  const wajib = profitTahunan >= nisab;
+  const selisih = profitTahunan - nisab;
+  el.innerHTML = `
+    <div style="margin-bottom:6px;"><span style="color:rgba(250,247,242,0.5);">Nisab (85gr emas):</span><br><b style="color:var(--gold-l);">${fmtRp(nisab)}</b></div>
+    <div style="margin-bottom:6px;"><span style="color:rgba(250,247,242,0.5);">Profit th.ini:</span><br><b>${fmtRp(profitTahunan)}</b></div>
+    <div style="padding:6px 8px;border-radius:7px;margin-top:4px;background:${wajib?'rgba(72,187,120,0.15)':'rgba(200,50,50,0.12)'};border:1px solid ${wajib?'rgba(72,187,120,0.3)':'rgba(200,50,50,0.25)'};font-size:12px;font-weight:500;color:${wajib?'#7de8a8':'#ff9090'};">
+      ${wajib?'✅ WAJIB ZAKAT':'❌ BELUM NISAB'}
+    </div>
+    <div style="font-size:10px;color:rgba(250,247,242,0.35);margin-top:5px;">${wajib?'Selisih +'+fmtRp(selisih):'Kurang '+fmtRp(Math.abs(selisih))}</div>
+  `;
+  el.style.color = '';
+}
+function renderConfig(){
+  const id=S.id;
+  document.getElementById('cfgNama').value=id.nama||'';
+  document.getElementById('cfgNo').value=id.no||'';
+  document.getElementById('cfgAlamat').value=id.alamat||'';
+  document.getElementById('cfgTelp').value=id.telp||'';
+  document.getElementById('cfgLogo').value=id.logo||'';
+  document.getElementById('cfgBg').value=id.bg||'';
+  document.getElementById('cfgTagline').value=id.tagline||'';
+  document.getElementById('cfgUser').value=S.auth.user||'';
+  document.getElementById('cfgView').value=S.viewMode||'v';
+  renderCfgJenis();renderCfgStatus();renderCfgItems();renderSwatches();
+}
+function saveIdentitas(){
+  const bg=document.getElementById('cfgBg').value.trim();
+  S.id.nama=document.getElementById('cfgNama').value.trim()||S.id.nama;
+  S.id.no=document.getElementById('cfgNo').value.trim();
+  S.id.alamat=document.getElementById('cfgAlamat').value.trim();
+  S.id.telp=document.getElementById('cfgTelp').value.trim();
+  S.id.logo=document.getElementById('cfgLogo').value.trim();
+  S.id.bg=bg;
+  S.id.tagline=document.getElementById('cfgTagline').value.trim();
+  sv(); updateHeader(); applyBg(); toast('✓ Identitas disimpan');
+}
+function saveCfgView(){
+  S.viewMode=document.getElementById('cfgView').value;
+  sv(); setViewUI(S.viewMode); renderLayanan();
+}
+function savePass(){
+  const user=document.getElementById('cfgUser').value.trim();
+  const old=document.getElementById('cfgPo').value;
+  const nw=document.getElementById('cfgPn').value;
+  const cf=document.getElementById('cfgPc').value;
+  if(old!==S.auth.pass){toast('❌ Password lama salah','#c03030');return;}
+  if(nw!==cf){toast('❌ Konfirmasi tidak cocok','#c03030');return;}
+  if(nw.length<6){toast('❌ Min 6 karakter','#c03030');return;}
+  S.auth.user=user;S.auth.pass=nw;
+  sv();
+  ['cfgPo','cfgPn','cfgPc'].forEach(i=>document.getElementById(i).value='');
+  toast('✓ Password diubah');
+}
+// Jenis
+function renderCfgJenis(){
+  document.getElementById('cfgJenisList').innerHTML=S.jenis.map((j,i)=>`
+    <div class="cfg-item"><span>${j}</span>
+      <button class="bg bg-sm" onclick="editJenis(${i})">✏️</button>
+      <button class="bg bg-sm bd" onclick="delJenis(${i})">🗑️</button>
+    </div>`).join('');
+}
+function addJenis(){const v=document.getElementById('newJenis').value.trim().toUpperCase();if(!v)return;S.jenis.push(v);document.getElementById('newJenis').value='';sv();renderCfgJenis();populateAll();toast('✓ Jenis ditambahkan');}
+function editJenis(i){const v=prompt('Edit jenis:',S.jenis[i]);if(!v?.trim())return;S.jenis[i]=v.trim().toUpperCase();sv();renderCfgJenis();populateAll();}
+function delJenis(i){showConfirm('Hapus Jenis',`Hapus "${S.jenis[i]}"?`,()=>{S.jenis.splice(i,1);sv();renderCfgJenis();populateAll();});}
+// Status
+function renderCfgStatus(){
+  document.getElementById('cfgStatusList').innerHTML=S.status.map((s,i)=>`
+    <div class="cfg-item"><span>${s}</span>
+      <button class="bg bg-sm" onclick="editStatus(${i})">✏️</button>
+      <button class="bg bg-sm bd" onclick="delStatus(${i})">🗑️</button>
+    </div>`).join('');
+}
+function addStatus(){const v=document.getElementById('newStatus').value.trim().toUpperCase();if(!v)return;S.status.push(v);document.getElementById('newStatus').value='';sv();renderCfgStatus();populateAll();toast('✓ Status ditambahkan');}
+function editStatus(i){const v=prompt('Edit status:',S.status[i]);if(!v?.trim())return;S.status[i]=v.trim().toUpperCase();sv();renderCfgStatus();populateAll();}
+function delStatus(i){showConfirm('Hapus Status',`Hapus "${S.status[i]}"?`,()=>{S.status.splice(i,1);sv();renderCfgStatus();populateAll();});}
+// Items
+function renderCfgItems(){
+  document.getElementById('cfgItemList').innerHTML=S.items.map((it,i)=>`
+    <div class="cfg-item"><span>${it}</span>
+      <button class="bg bg-sm" onclick="editItem(${i})">✏️</button>
+      <button class="bg bg-sm bd" onclick="delItem(${i})">🗑️</button>
+    </div>`).join('');
+}
+function addItem(){const v=document.getElementById('newItem').value.trim().toUpperCase();if(!v)return;S.items.push(v);document.getElementById('newItem').value='';sv();renderCfgItems();fillSel('pItem',S.items);toast('✓ Item ditambahkan');}
+function editItem(i){const v=prompt('Edit item:',S.items[i]);if(!v?.trim())return;S.items[i]=v.trim().toUpperCase();sv();renderCfgItems();fillSel('pItem',S.items);}
+function delItem(i){showConfirm('Hapus Item',`Hapus "${S.items[i]}"?`,()=>{S.items.splice(i,1);sv();renderCfgItems();fillSel('pItem',S.items);});}
+// Swatches
+function renderSwatches(){
+  document.getElementById('colorSwatches').innerHTML=TEMAS.map(t=>`
+    <div class="swatch${S.tema===t.c?' active':''}" style="background:${t.c};" title="${t.l}" onclick="setThema('${t.c}',this)"></div>
+  `).join('');
+}
+function setThema(c,el){S.tema=c;sv();applyTheme();document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));el.classList.add('active');toast('✓ Tema diperbarui');}
+
+// ── Export/Print Layanan (uses current filter) ──
+function exportLayananExcel(){
+  const data = getFiltered();
+  if(!data.length){ toast('❌ Tidak ada data untuk diekspor','#c03030'); return; }
+  const wb = XLSX.utils.book_new();
+  const wsD = [
+    ['No','Tanggal','Nama Klien','No HP','Alamat','Jenis','Status','Biaya','Pengeluaran','Sisa','Catatan'],
+    ...data.map((l,i)=>[i+1,l.tanggal,l.nama,l.hp,l.alamat,l.jenis,l.status,l.biaya,getTotalP(l),l.biaya-getTotalP(l),l.catatan])
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(wsD);
+  ws['!cols']=[5,12,20,14,20,12,12,14,14,14,20].map(w=>({wch:w}));
+  XLSX.utils.book_append_sheet(wb,ws,'Layanan');
+  const hasF = S.filters.search||S.filters.jenis||S.filters.status||S.filters.from||S.filters.to;
+  const label = hasF ? 'Terfilter' : 'Semua';
+  XLSX.writeFile(wb,`Layanan_${label}_${todayStr()}.xlsx`);
+  toast(`📥 Excel ${data.length} berkas diunduh`);
+}
+
+function printLayanan(){
+  const data = getFiltered();
+  if(!data.length){ toast('❌ Tidak ada data','#c03030'); return; }
+  const id = S.id;
+  const hasF = S.filters.search||S.filters.jenis||S.filters.status||S.filters.from||S.filters.to;
+  const filterInfo = hasF ? `Filter: ${[S.filters.jenis,S.filters.status,S.filters.search,S.filters.from&&'Dari '+S.filters.from,S.filters.to&&'s/d '+S.filters.to].filter(Boolean).join(' | ')}` : 'Semua Data';
+  const totalBiaya = data.reduce((s,l)=>s+l.biaya,0);
+  const totalP = data.reduce((s,l)=>s+getTotalP(l),0);
+  const totalSisa = totalBiaya - totalP;
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Daftar Layanan</title>
+  <style>
+    body{font-family:Georgia,serif;color:#222;padding:20px;font-size:12px;}
+    h1{font-size:16px;text-align:center;margin-bottom:2px;}
+    .sub{font-size:11px;text-align:center;color:#666;margin-bottom:2px;}
+    hr{border:none;border-top:2px solid #b8965a;margin:10px 0;}
+    table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px;}
+    th{background:#f5f0e8;padding:6px 8px;text-align:left;border:1px solid #ccc;font-size:10px;}
+    td{padding:5px 7px;border:1px solid #eee;}
+    .r{text-align:right;} .g{color:#8a6d3b;font-weight:bold;}
+    tfoot td{background:#f9f5ed;font-weight:bold;border-top:2px solid #b8965a;}
+    .badge{display:inline-block;padding:1px 6px;border-radius:10px;font-size:10px;border:1px solid #ccc;}
+    .footer{margin-top:16px;text-align:center;font-size:10px;color:#aaa;}
+  </style></head><body>
+  <h1>${id.nama}</h1>
+  <div class="sub">${id.no} — ${id.alamat||''}</div>
+  <div class="sub" style="font-weight:bold;font-size:12px;margin-top:4px;">DAFTAR LAYANAN</div>
+  <div class="sub">${filterInfo} · Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div>
+  <hr>
+  <table>
+    <thead><tr><th>#</th><th>Tanggal</th><th>Nama Klien</th><th>Jenis</th><th>Status</th><th class="r">Biaya</th><th class="r">Peng.</th><th class="r">Sisa</th><th>Catatan</th></tr></thead>
+    <tbody>
+    ${data.map((l,i)=>{const tp=getTotalP(l);const sisa=l.biaya-tp;return`<tr>
+      <td>${i+1}</td><td style="white-space:nowrap;">${l.tanggal}</td><td><b>${l.nama}</b>${l.hp?`<br><span style="color:#999;font-size:10px;">${l.hp}</span>`:''}</td>
+      <td><span class="badge">${l.jenis}</span></td><td>${l.status}</td>
+      <td class="r g">${fmtRp(l.biaya)}</td>
+      <td class="r" style="color:#c33;">${fmtRp(tp)}</td>
+      <td class="r" style="color:${sisa<0?'#c33':'#2a7a4a'};font-weight:bold;">${fmtRp(sisa)}</td>
+      <td style="font-size:10px;color:#777;">${l.catatan||''}</td>
+    </tr>`;}).join('')}
+    </tbody>
+    <tfoot><tr>
+      <td colspan="5" style="text-align:right;">TOTAL (${data.length} berkas)</td>
+      <td class="r g">${fmtRp(totalBiaya)}</td>
+      <td class="r" style="color:#c33;">${fmtRp(totalP)}</td>
+      <td class="r" style="color:${totalSisa<0?'#c33':'#2a7a4a'};">${fmtRp(totalSisa)}</td>
+      <td></td>
+    </tr></tfoot>
+  </table>
+  <div class="footer">Copyright ©2026 SRISP | v1.6</div>
+  <script>window.print();<\/script></body></html>`);
+  w.document.close();
+}
+
+
+  const wb=XLSX.utils.book_new();
+  const wsD=[
+    ['No','Tanggal','Nama Klien','No HP','Alamat','Jenis','Status','Biaya','Pengeluaran','Sisa','Catatan'],
+    ...S.layanan.map((l,i)=>[i+1,l.tanggal,l.nama,l.hp,l.alamat,l.jenis,l.status,l.biaya,getTotalP(l),l.biaya-getTotalP(l),l.catatan])
+  ];
+  const ws=XLSX.utils.aoa_to_sheet(wsD);
+  ws['!cols']=[5,12,20,14,20,12,12,14,14,14,20].map(w=>({wch:w}));
+  XLSX.utils.book_append_sheet(wb,ws,'Layanan');
+  const pe=[['No','Klien','Jenis','Item','Catatan','Note','Jumlah']];let no=1;
+  S.layanan.forEach(l=>(l.pengeluaran||[]).forEach(p=>pe.push([no++,l.nama,l.jenis,p.item,p.catatan,p.note,p.jumlah])));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(pe),'Pengeluaran');
+  const bruto=S.layanan.reduce((s,l)=>s+l.biaya,0);
+  const peng=S.layanan.reduce((s,l)=>s+getTotalP(l),0);
+  const profit=bruto-peng;
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ['REKAP KEUANGAN - '+S.id.nama],[''],
+    ['Total Omset',bruto],['Total Pengeluaran',peng],['Profit Bersih',profit],
+    ['Alokasi Zakat 2.5%',profit*0.025],[''],
+    ['Total Berkas',S.layanan.length],['Selesai',S.layanan.filter(l=>l.status==='Selesai').length]
+  ]),'Rekap');
+  XLSX.writeFile(wb,`Laporan_Notaris_${todayStr()}.xlsx`);
+  toast('📥 Excel diunduh');
+}
+
+function printDash(){
+  const id=S.id;
+  const bruto=S.layanan.reduce((s,l)=>s+l.biaya,0);
+  const peng=S.layanan.reduce((s,l)=>s+getTotalP(l),0);
+  const profit=bruto-peng;
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Laporan</title>
+  <style>body{font-family:Georgia,serif;color:#222;padding:24px;max-width:750px;margin:0 auto;}
+  h1{font-size:18px;text-align:center;}h2{font-size:12px;text-align:center;font-weight:normal;color:#666;margin-bottom:4px;}
+  hr{border:none;border-top:2px solid #b8965a;margin:16px 0;}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px;}
+  th{background:#f5f0e8;padding:8px;text-align:left;border:1px solid #ddd;}
+  td{padding:7px 8px;border:1px solid #eee;}
+  .r{text-align:right;}.g{color:#8a6d3b;font-weight:bold;}
+  .z{background:#fff8e6;border:2px solid #b8965a;padding:16px;border-radius:8px;text-align:center;margin-top:16px;}
+  </style></head><body>
+  <h1>${id.nama}</h1><h2>${id.no}</h2><h2>${id.alamat||''}</h2>
+  <hr><h2 style="font-size:14px;font-weight:bold;color:#333;text-align:center;">LAPORAN KEUANGAN</h2>
+  <p style="text-align:center;font-size:11px;color:#888;">${new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
+  <hr>
+  <table><tr><th>Keterangan</th><th class="r">Jumlah</th></tr>
+  <tr><td>Total Omset</td><td class="r g">${fmtRp(bruto)}</td></tr>
+  <tr><td>Total Pengeluaran</td><td class="r" style="color:#c00">${fmtRp(peng)}</td></tr>
+  <tr style="background:#f0f8f0"><td><b>Profit Bersih</b></td><td class="r g"><b>${fmtRp(profit)}</b></td></tr>
+  <tr><td>Total Berkas</td><td class="r">${S.layanan.length}</td></tr>
+  </table>
+  <div class="z"><p style="color:#8a6d3b;font-size:12px;margin-bottom:4px;">🕌 Alokasi Zakat Maal (2.5%)</p>
+  <p style="font-size:22px;font-weight:bold;color:#8a6d3b;">${fmtRp(profit*0.025)}</p></div>
+  <hr><table><tr><th>#</th><th>Klien</th><th>Jenis</th><th>Status</th><th class="r">Biaya</th><th class="r">Sisa</th></tr>
+  ${S.layanan.map((l,i)=>`<tr><td>${i+1}</td><td>${l.nama}</td><td>${l.jenis}</td><td>${l.status}</td>
+  <td class="r">${fmtRp(l.biaya)}</td><td class="r">${fmtRp(l.biaya-getTotalP(l))}</td></tr>`).join('')}
+  </table><script>window.print();<\/script></body></html>`);
+  w.document.close();
+}
+
+// ═══════════════════════════════════════════
+// MODAL HELPERS
+// ═══════════════════════════════════════════
+function openM(id){document.getElementById(id).classList.remove('hidden');}
+function closeM(id){document.getElementById(id).classList.add('hidden');}
+// Close on backdrop tap
+document.querySelectorAll('.mo').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.add('hidden');});
+});
+
+// Confirm dialog
+let confirmCb=null;
+function showConfirm(title,msg,cb){
+  document.getElementById('mConfTitle').textContent=title;
+  document.getElementById('mConfMsg').textContent=msg;
+  confirmCb=cb; openM('mConfirm');
+}
+document.getElementById('mConfOk').onclick=()=>{closeM('mConfirm');if(confirmCb)confirmCb();confirmCb=null;};
+
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+function fmtRp(n){if(isNaN(n))return'Rp 0';return'Rp '+Math.abs(n).toLocaleString('id-ID')+(n<0?' (-)':'');}
+function fmtDate(d){if(!d)return'-';const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});}
+function todayStr(){const d=new Date();return`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;}
+function pad(n){return String(n).padStart(2,'0');}
+function sBadge(s){const m={'Selesai':'bg2','Drafting':'bo','Proses BPN':'bp','Pending':'br','Menunggu TTD':'bb'};return m[s]||'bb';}
+
+function toast(msg,c=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.background=c?'rgba(40,15,15,0.96)':'';
+  t.classList.add('show');clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){['mForm','mPengeluaran','mFilter','mConfirm','mDelPass'].forEach(closeM);}
+  if(e.key==='Enter'&&document.getElementById('mDelPass')&&!document.getElementById('mDelPass').classList.contains('hidden')){
+    document.getElementById('mDelOk').click();
+  }
+});
+
+// ═══════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════
+ld();
+updateDateTick();
+// Apply building bg to login screen immediately before any JS runs
+document.getElementById('loginScreen').style.backgroundImage=`url("${DEFAULT_BG}")`;
+document.getElementById('loginScreen').style.backgroundSize='cover';
+document.getElementById('loginScreen').style.backgroundPosition='center bottom';
+if(S.auth.loggedIn){
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('app').style.visibility='visible';
+  init(); resetIdle();
+} else {
+  document.getElementById('app').style.visibility='hidden';
+  updateHeader();
+  applyBg();
+}
+</script>
+</body>
+</html>
